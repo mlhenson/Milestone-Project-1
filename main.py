@@ -131,6 +131,7 @@ def win_check(boardlist):
         return True
     return False
 
+
 # Play again?
 def play_again():
     symbolchoices = ["Y", "N"]
@@ -140,11 +141,11 @@ def play_again():
         if play_again_response not in symbolchoices:
             print("Please choose Y or N")
             play_again_response = "invalid"
-            print(play_again_response)
         elif play_again_response == "Y":
             return True
         elif play_again_response == "N":
             return False
+
 
 # # Cats Game checker
 # def cats_game(boardlist):
@@ -165,7 +166,6 @@ boardplaces = list(range(1, 10))
 gameover = False
 draw_game = False
 playernames = ["Player 1", "Player 2"]
-playersymbol = ["1", "2"]
 gamereset = False
 
 # Game Start
@@ -198,7 +198,6 @@ while not gameover:
             print(f"Congratulations {playernames[currentplayer]}, you've won!")
         elif draw_game:
             print("Cat's game!")
-        break
 
     # If it made it this far, no one's won so switch the player and clear the board
     if currentplayer == 0:
@@ -207,21 +206,21 @@ while not gameover:
         currentplayer = 0
     clear_board()
 
-# Restart game
-while gameover:
-    gamereset = play_again()
-    print(gamereset)
-    if gamereset == False:
-        break
-    else:
-        clear_board()
-        boardplaces = list(range(1, 10))
-        draw_game = False
-        gamereset = False
-        print("Let's see who is gonna go first this time!")
-        currentplayer = random_player()
-        print(f"Great! Looks like {playernames[currentplayer]} is starting us off!")
-        gameover = False
-        printboard()
-        break
+    # Restart game
+    while gameover:
+        gamereset = play_again()
+        print(gamereset)
+        if gamereset is False:
+            clear_board()
+            break
+        else:
+            clear_board()
+            boardplaces = list(range(1, 10))
+            draw_game = False
+            gamereset = False
+            print("Let's see who is gonna go first this time!")
+            currentplayer = random_player()
+            print(f"Great! Looks like {playernames[currentplayer]} is starting us off!")
+            gameover = False
+            continue
 
