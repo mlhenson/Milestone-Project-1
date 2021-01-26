@@ -88,48 +88,61 @@ def place_piece(position):
 
 
 # Checks all possible combinations to see if a player has won
-# Want to figure out a cleaner way to do this
+# Returns a tuple, the first is if the game is over and the second is if it's a cat's game
+# This returned tuple can then be writen to it's own variable then applied to variables controlling the main while loop
 def win_check(boardlist):
     # Top Horizontal
     if boardlist[6] == playersymbol[currentplayer] and boardlist[7] == playersymbol[currentplayer] \
             and boardlist[8] == playersymbol[currentplayer]:
-        return True
+        return True, False
 
     # Mid Horizontal
     elif boardlist[3] == playersymbol[currentplayer] and boardlist[4] == playersymbol[currentplayer] \
             and boardlist[5] == playersymbol[currentplayer]:
-        return True
+        return True, False
 
     # Bot Horizontal
     elif boardlist[0] == playersymbol[currentplayer] and boardlist[1] == playersymbol[currentplayer] \
             and boardlist[2] == playersymbol[currentplayer]:
-        return True
+        return True, False
 
     # Left Vertical
     elif boardlist[6] == playersymbol[currentplayer] and boardlist[3] == playersymbol[currentplayer] \
             and boardlist[0] == playersymbol[currentplayer]:
-        return True
+        return True, False
 
     # Mid Vertical
     elif boardlist[7] == playersymbol[currentplayer] and boardlist[4] == playersymbol[currentplayer] \
             and boardlist[1] == playersymbol[currentplayer]:
-        return True
+        return True, False
 
     # Right Vertical
     elif boardlist[8] == playersymbol[currentplayer] and boardlist[5] == playersymbol[currentplayer] \
             and boardlist[2] == playersymbol[currentplayer]:
-        return True
+        return True, False
 
     # Top Left Diagonal
     elif boardlist[6] == playersymbol[currentplayer] and boardlist[4] == playersymbol[currentplayer] \
             and boardlist[2] == playersymbol[currentplayer]:
-        return True
+        return True, False
 
     # Top Right Diagonal
     elif boardlist[0] == playersymbol[currentplayer] and boardlist[4] == playersymbol[currentplayer] \
             and boardlist[8] == playersymbol[currentplayer]:
-        return True
-    return False
+        return True, False
+
+    # Cat's game check
+    # Go through the board state and output any strings into a new list
+    content_type = []
+    for item in boardlist:
+        if type(item) == str:
+            content_type += item
+    # If the newly output list is all strings it'll match the input and no valid integer locations will remain
+    if boardlist == content_type:
+        # print("DEBUG: CATS GAME")
+        return True, True
+
+    return False, False
 
 
 # Play again?
@@ -145,20 +158,6 @@ def play_again():
             return True
         elif play_again_response == "N":
             return False
-
-
-# # Cats Game checker
-# def cats_game(boardlist):
-#     # Check if everything is filled
-#     for item in range(0, 8):
-#         slots_filled = 0
-#         if type(boardlist[item]) == type(1):
-#             print(type(boardlist[item]))
-#         else:
-#             slots_filled += 1
-#             print(slots_filled)
-#         if slots_filled == 9:
-#             return True
 
 
 # Variables
@@ -187,8 +186,10 @@ while not gameover:
     place_piece(user_choice(boardplaces))
 
     # Win check and cat's game check
-    gameover = win_check(boardplaces)
-    # draw_game = cats_game(boardplaces)
+    win_check_output = win_check(boardplaces)
+    gameover = win_check_output[0]
+    draw_game = win_check_output[1]
+    # gameover = win_check(boardplaces)
 
     # Clear the board and congrats the player who won and break the loop
     if gameover:
@@ -199,28 +200,25 @@ while not gameover:
         elif draw_game:
             print("Cat's game!")
 
-    # If it made it this far, no one's won so switch the player and clear the board
+    # If the game isn't over at this point, switch the player
     if currentplayer == 0:
         currentplayer = 1
     else:
         currentplayer = 0
-    clear_board()
 
-    # Restart game
+    # Prompt the user if they'd like to restart if the game ended during play
     while gameover:
         gamereset = play_again()
-        print(gamereset)
         if gamereset is False:
-            clear_board()
             break
         else:
-            clear_board()
             boardplaces = list(range(1, 10))
             draw_game = False
             gamereset = False
-            print("Let's see who is gonna go first this time!")
+            print("Switching up who goes first this time...")
             currentplayer = random_player()
             print(f"Great! Looks like {playernames[currentplayer]} is starting us off!")
             gameover = False
             continue
 
+    clear_board()
